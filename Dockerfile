@@ -29,18 +29,15 @@ RUN set -ex \
         git \
     ' \
     && apt-get update -yqq \
-    && apt-get upgrade -yqq \
     && apt-get install -yqq --no-install-recommends \
         $buildDeps \
         freetds-bin \
         build-essential \
-        default-libmysqlclient-dev \
         apt-utils \
-        curl \
-        rsync \
         netcat \
     && useradd -ms /bin/bash -d ${AIRFLOW_USER_HOME} airflow \
-    && pip install -U pip setuptools wheel "flake8==3.6.0" "pep8-naming==0.7.0" "coverage==4.5.3" \
+    && pip install -U pip setuptools \
+    && pip install -U "flake8==3.6.0" "pep8-naming==0.7.0" "coverage==4.5.3" \
     && pip install pytz \
     && pip install pyOpenSSL \
     && pip install ndg-httpsclient \
