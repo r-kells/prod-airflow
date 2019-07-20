@@ -42,7 +42,3 @@ docstop:
 .PHONY: docrm
 docrm: docstop
 	docker rm $(CONTAINERS) 2>/dev/null || true
-
-# TODO
-# docker logs -f <container>
-# docker inspect <container>
