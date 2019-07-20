@@ -7,7 +7,6 @@ class TestDags(unittest.TestCase):
     """
     Generic tests that all DAGs in the repository should be able to pass.
     """
-    AIRFLOW_ALERT_EMAIL = 'alerts@airflow.com'
     LOAD_SECOND_THRESHOLD = 2
 
     def setUp(self):
@@ -41,11 +40,20 @@ class TestDags(unittest.TestCase):
             )
         )
 
-    def test_dagbag_emails(self):
+    def test_dagbag_has_emails(self):
         """
         Verify that every DAG register alerts to the appropriate email address
         """
         for dag_id, dag in self.dagbag.dags.items():
             email_list = dag.default_args.get('email', [])
             msg = 'Alerts are not sent for DAG {id}'.format(id=dag_id)
-            self.assertIn(self.AIRFLOW_ALERT_EMAIL, email_list, msg)
+            self.assertNotEqual(email_list, [], msg)
+
+    def test_dagbag_has_owner(self):
+        """
+        Verify that every DAG has an owner
+        """
+        for dag_id, dag in self.dagbag.dags.items():
+            owner = dag.default_args.get('owner', [])
+            msg = '"owner" is not sent for DAG {id}'.format(id=dag_id)
+            self.assertNotEqual(owner, [], msg)

@@ -9,6 +9,8 @@
     - [1. ENV_FILE: Environment Variable Handling](#1-ENVFILE-Environment-Variable-Handling)
     - [2. EXECUTOR: Executor Type](#2-EXECUTOR-Executor-Type)
   - [Test](#Test)
+    - [Included tests](#Included-tests)
+    - [Coverage](#Coverage)
   - [Debug](#Debug)
   - [Run](#Run)
   - [Monitoring](#Monitoring)
@@ -55,7 +57,7 @@ Optionally install [Extra Airflow Packages](https://airflow.incubator.apache.org
 
 We use `.env` files to manage docker environment variables. 
 This is configurable through specifying the environment variable `ENV_FILE`.
-The default file is `dev.env`
+The default file is [dev.env](dev.env), also included [prod.env](prod.env)
 
     make <command> ENV_FILE=prod.env
 
@@ -80,6 +82,17 @@ Therefore you can easily have tests that interact with the database.
 To use the Celery Executor:
 
         make test EXECUTOR=Celery
+
+### Included tests
+
+- [test_dag_smoke.py](test/test_dag_smoke.py)
+  - Tests that all DAGs compile
+  - Verifies DAG bag loads in under 2 seconds.
+  - Verifies all DAGs have `email` and `onwer` set.
+
+### Coverage
+
+`make test` runs unittests with coverage, then prints the results.
 
 ## Debug
 
