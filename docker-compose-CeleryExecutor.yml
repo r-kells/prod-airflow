@@ -1,0 +1,82 @@
+version: '2.1'
+services:
+    redis:
+        image: 'redis:3.2.7'
+        # command: redis-server --requirepass redispass
+
+    postgres:
+        image: postgres:9.6
+        environment:
+            - POSTGRES_USER=airflow
+            - POSTGRES_PASSWORD=airflow
+            - POSTGRES_DB=airflow
+        # Uncomment these lines to persist data on the local filesystem.
+        #     - PGDATA=/var/lib/postgresql/data/pgdata
+        # volumes:
+        #     - ./pgdata:/var/lib/postgresql/data/pgdata
+
+    webserver:
+        image: r-kells/docker-airflow:latest
+        restart: always
+        depends_on:
+            - postgres
+            - redis
+        env_file:
+            - ${ENV_FILE}
+        environment:
+            - EXECUTOR=Celery
+        volumes:
+            - ./dags:/usr/local/airflow/dags
+            - ./test:/usr/local/airflow/test
+            - ./plugins:/usr/local/airflow/plugins
+        ports:
+            - "8080:8080"
+        command: webserver
+        healthcheck:
+            test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+            interval: 30s
+            timeout: 30s
+            retries: 3
+
+    flower:
+        image: r-kells/docker-airflow:latest
+        restart: always
+        depends_on:
+            - redis
+        env_file:
+            - ${ENV_FILE}
+        environment:
+            - EXECUTOR=Celery
+        ports:
+            - "5555:5555"
+        command: flower
+
+    scheduler:
+        image: r-kells/docker-airflow:latest
+        restart: always
+        depends_on:
+            - webserver
+        env_file:
+            - ${ENV_FILE}
+        environment:
+            - EXECUTOR=Celery
+        volumes:
+            - ./dags:/usr/local/airflow/dags
+            - ./test:/usr/local/airflow/test
+            - ./plugins:/usr/local/airflow/plugins
+        command: scheduler
+
+    worker:
+        image: r-kells/docker-airflow:latest
+        restart: always
+        depends_on:
+            - scheduler
+        env_file:
+            - ${ENV_FILE}
+        environment:
+            - EXECUTOR=Celery
+        volumes:
+            - ./dags:/usr/local/airflow/dags
+            - ./test:/usr/local/airflow/test
+            - ./plugins:/usr/local/airflow/plugins
+        command: worker

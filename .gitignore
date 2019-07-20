@@ -1,0 +1,15 @@
+# Editors
+.idea
+.vscode
+
+# Python
+.python-version
+.coverage
+__pycache__
+*.pyc
+.tox
+
+# Build
+dist/
+build/
+venv
