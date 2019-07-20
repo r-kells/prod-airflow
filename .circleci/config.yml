@@ -1,0 +1,20 @@
+version: 2
+
+jobs:
+  build_and_test:
+    machine: true
+    working_directory: ~/CircleCI/docker-airflow
+    steps:
+      - checkout
+      # - setup_remote_docker:
+      #     docker_layer_caching: true
+      - run: 
+          name: Test
+          command: |
+            make test
+            docker run r-kells/docker-airflow:latest version |grep '1.10.3'
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build_and_test
