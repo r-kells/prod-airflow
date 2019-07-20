@@ -1,12 +1,17 @@
 # prod-airflow
 [![CircleCI](https://circleci.com/gh/r-kells/prod-airflow/tree/master.svg?style=svg&circle-token=3bed58b792cc11f4231fac6d5100e3e5b49024af)](https://circleci.com/gh/r-kells/prod-airflow/tree/master)
+[![Docker Build Status](https://img.shields.io/docker/cloud/automated/rkells/prod-airflow.svg)]()
+[![Docker Build Status](https://img.shields.io/docker/cloud/build/rkells/prod-airflow.svg)]()
+
+[![Docker Pulls](https://img.shields.io/docker/pulls/rkells/prod-airflow.svg)]()
+[![Docker Stars](https://img.shields.io/docker/stars/rkells/prod-airflow.svg)]()
 
 - [prod-airflow](#prod-airflow)
-  - [Informations](#Informations)
+  - [Information](#Information)
   - [Installation](#Installation)
-  - [Build](#Build)
   - [Makefile Configuration Options](#Makefile-Configuration-Options)
     - [1. ENV_FILE: Environment Variable Handling](#1-ENVFILE-Environment-Variable-Handling)
+  - [Build](#Build)
     - [2. EXECUTOR: Executor Type](#2-EXECUTOR-Executor-Type)
   - [Test](#Test)
     - [Included tests](#Included-tests)
@@ -25,7 +30,7 @@
     - [Install custom python package](#Install-custom-python-package)
     - [UI Links](#UI-Links)
 
-## Informations
+## Information
 This repository was originally forked from Puckel's docker-airflow [repository](https://github.com/puckel/docker-airflow)
 
 * Based on Python (3.7-slim) official Image [python:3.7-slim](https://hub.docker.com/_/python/) and uses the official [Postgres](https://hub.docker.com/_/postgres/) as backend and [Redis](https://hub.docker.com/_/redis/) as queue
@@ -37,16 +42,7 @@ This repository was originally forked from Puckel's docker-airflow [repository](
 
 Pull the image from the Docker repository.
 
-    docker pull r-kells/docker-airflow
-
-## Build
-
-    make build 
-
-Optionally install [Extra Airflow Packages](https://airflow.incubator.apache.org/installation.html#extra-package) and/or python dependencies at build time :
-
-    docker build --rm --build-arg AIRFLOW_DEPS="datadog,dask" -t r-kells/docker-airflow .
-    docker build --rm --build-arg PYTHON_DEPS="flask_oauthlib>=0.9" -t r-kells/docker-airflow .
+    docker pull rkells/prod-airflow
 
 ## Makefile Configuration Options
 
@@ -60,6 +56,15 @@ This is configurable through specifying the environment variable `ENV_FILE`.
 The default file is [dev.env](dev.env), also included [prod.env](prod.env)
 
     make <command> ENV_FILE=prod.env
+
+## Build
+
+    make build 
+
+Optionally install [Extra Airflow Packages](https://airflow.incubator.apache.org/installation.html#extra-package) and/or python dependencies at build time :
+
+    docker build --rm --build-arg AIRFLOW_DEPS="datadog,dask" -t rkells/prod-airflow .
+    docker build --rm --build-arg PYTHON_DEPS="flask_oauthlib>=0.9" -t rkells/prod-airflow .
 
 ### 2. EXECUTOR: Executor Type
 
@@ -145,7 +150,7 @@ See [Airflow documentation](http://airflow.readthedocs.io/en/latest/howto/set-co
 ### Fernet Key
 For encrypted connection passwords (in Local or Celery Executor), you must have the same fernet_key. By default docker-airflow generates the fernet_key at startup, you have to set an environment variable in the docker-compose (ie: docker-compose-LocalExecutor.yml) file to set the same key accross containers. To generate a fernet_key :
 
-    docker run r-kells/docker-airflow python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)"
+    docker run rkells/prod-airflow python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)"
 
 ### Authentication
 

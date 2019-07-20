@@ -1,8 +1,8 @@
 # VERSION 1.10.3
 # AUTHOR: Ryan Kelly
 # DESCRIPTION: Basic Airflow container
-# BUILD: docker build --rm -t r-kells/docker-airflow .
-# SOURCE: https://github.com/r-kellsdocker-airflow
+# BUILD: docker build --rm -t rkells/prod-airflow .
+# SOURCE: https://github.com/r-kells/prod-airflow
 
 FROM python:3.7-slim
 LABEL maintainer="Ryan Kelly"
