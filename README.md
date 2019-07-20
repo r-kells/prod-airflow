@@ -11,11 +11,14 @@
   - [Test](#Test)
   - [Debug](#Debug)
   - [Run](#Run)
+  - [Monitoring](#Monitoring)
+    - [Canary DAG](#Canary-DAG)
   - [Configurating Airflow](#Configurating-Airflow)
     - [Environment Variables:](#Environment-Variables)
     - [Fernet Key](#Fernet-Key)
+    - [Authentication](#Authentication)
     - [Ad hoc query / Connections](#Ad-hoc-query--Connections)
-    - [The __init__airflow.py DAG](#The-initairflowpy-DAG)
+    - [The init_airflow.py DAG](#The-initairflowpy-DAG)
     - [Custom Airflow plugins](#Custom-Airflow-plugins)
     - [Install custom python package](#Install-custom-python-package)
     - [UI Links](#UI-Links)
@@ -98,6 +101,26 @@ By default, docker-airflow runs Airflow with **SequentialExecutor** :
 
     make run
 
+## Monitoring
+
+Using the DAG [init_airflow.py](dags/init_airflow.py) we automatically setup airflow Charts for monitoring.
+
+- Airflow Charts: [localhost:8080/admin/chart/](http://localhost:8080/admin/chart/)
+
+### Canary DAG 
+
+The [canary DAG](dags/canary.py) runs every 5 minutes.
+
+It should have a connection check with a simple SQL query (e.g.” SELECT 1”) for all the critical data sources. 
+By default its connected to the default postgres setup.
+
+The “canary” DAG helps to answer the following questions:
+
+- Do all critical connections work.
+- How long it takes for the Airflow scheduler to schedule the task (scheduled execution_time — current_time).
+- How long the task runs.
+
+
 ## Configurating Airflow
 
 ### Environment Variables:
@@ -108,6 +131,13 @@ See [Airflow documentation](http://airflow.readthedocs.io/en/latest/howto/set-co
 For encrypted connection passwords (in Local or Celery Executor), you must have the same fernet_key. By default docker-airflow generates the fernet_key at startup, you have to set an environment variable in the docker-compose (ie: docker-compose-LocalExecutor.yml) file to set the same key accross containers. To generate a fernet_key :
 
     docker run r-kells/docker-airflow python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)"
+
+### Authentication
+
+The config [prod.env](prod.env) enables basic password authentication for Airflow.
+Even if you are behind other security walls, this authentication is useful because of the ability to filter DAGs by owner.
+
+See the [documentation](https://airflow.apache.org/security.html?highlight=authentication#password) for setup and other details.
 
 ### Ad hoc query / Connections
 If you want to use Ad hoc query, make sure you've configured connections:
@@ -120,13 +150,15 @@ Go to Admin -> Connections and Edit: set the values (equivalent to values in air
 - Login : airflow
 - Password : airflow
 
-### The __init__airflow.py DAG
+### The init_airflow.py DAG
 
-This DAG runs once and is intended to help configure airflow to bootstrap a new installation, or setup for testing.
+The [init_airflow.py](dags/init_airflow.py) DAG
+runs once and is intended to help configure airflow to bootstrap a new installation, or setup for testing.
 
 As currently configured:
-1. Creates a connection to postgres called `test_postgres` from the `Ad-hoc query UI.
+1. Creates a connection to postgres called `my_postgres` from the `Ad-hoc query UI.
 2. Creates a pool `mypool` with 10 slots. 
+3. Creates the [monitoring charts](#Monitoring).
 
 You are encouraged to extend this DAG for reproducible setup. 
 
