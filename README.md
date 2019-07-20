@@ -9,9 +9,9 @@
 - [prod-airflow](#prod-airflow)
   - [Information](#Information)
   - [Installation](#Installation)
-  - [Build](#Build)
   - [Makefile Configuration Options](#Makefile-Configuration-Options)
     - [1. ENV_FILE: Environment Variable Handling](#1-ENVFILE-Environment-Variable-Handling)
+  - [Build](#Build)
     - [2. EXECUTOR: Executor Type](#2-EXECUTOR-Executor-Type)
   - [Test](#Test)
     - [Included tests](#Included-tests)
@@ -42,16 +42,7 @@ This repository was originally forked from Puckel's docker-airflow [repository](
 
 Pull the image from the Docker repository.
 
-    docker pull r-kells/docker-airflow
-
-## Build
-
-    make build 
-
-Optionally install [Extra Airflow Packages](https://airflow.incubator.apache.org/installation.html#extra-package) and/or python dependencies at build time :
-
-    docker build --rm --build-arg AIRFLOW_DEPS="datadog,dask" -t r-kells/docker-airflow .
-    docker build --rm --build-arg PYTHON_DEPS="flask_oauthlib>=0.9" -t r-kells/docker-airflow .
+    docker pull rkells/prod-airflow
 
 ## Makefile Configuration Options
 
@@ -65,6 +56,15 @@ This is configurable through specifying the environment variable `ENV_FILE`.
 The default file is [dev.env](dev.env), also included [prod.env](prod.env)
 
     make <command> ENV_FILE=prod.env
+
+## Build
+
+    make build 
+
+Optionally install [Extra Airflow Packages](https://airflow.incubator.apache.org/installation.html#extra-package) and/or python dependencies at build time :
+
+    docker build --rm --build-arg AIRFLOW_DEPS="datadog,dask" -t rkells/prod-airflow .
+    docker build --rm --build-arg PYTHON_DEPS="flask_oauthlib>=0.9" -t rkells/prod-airflow .
 
 ### 2. EXECUTOR: Executor Type
 
@@ -150,7 +150,7 @@ See [Airflow documentation](http://airflow.readthedocs.io/en/latest/howto/set-co
 ### Fernet Key
 For encrypted connection passwords (in Local or Celery Executor), you must have the same fernet_key. By default docker-airflow generates the fernet_key at startup, you have to set an environment variable in the docker-compose (ie: docker-compose-LocalExecutor.yml) file to set the same key accross containers. To generate a fernet_key :
 
-    docker run r-kells/docker-airflow python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)"
+    docker run rkells/prod-airflow python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)"
 
 ### Authentication
 

@@ -1,5 +1,5 @@
 CONTAINERS := $(shell docker ps -a -q)
-IMAGE_TAG := r-kells/docker-airflow:latest
+IMAGE_TAG := rkells/prod-airflow:latest
 SERVICE := webserver
 EXECUTOR := Local
 ENV_FILE := dev.env
