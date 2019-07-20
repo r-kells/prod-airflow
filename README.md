@@ -1,8 +1,13 @@
 # prod-airflow
 [![CircleCI](https://circleci.com/gh/r-kells/prod-airflow/tree/master.svg?style=svg&circle-token=3bed58b792cc11f4231fac6d5100e3e5b49024af)](https://circleci.com/gh/r-kells/prod-airflow/tree/master)
+[![Docker Build Status](https://img.shields.io/docker/cloud/automated/rkells/prod-airflow.svg)]()
+[![Docker Build Status](https://img.shields.io/docker/cloud/build/rkells/prod-airflow.svg)]()
+
+[![Docker Pulls](https://img.shields.io/docker/pulls/rkells/prod-airflow.svg)]()
+[![Docker Stars](https://img.shields.io/docker/stars/rkells/prod-airflow.svg)]()
 
 - [prod-airflow](#prod-airflow)
-  - [Informations](#Informations)
+  - [Information](#Information)
   - [Installation](#Installation)
   - [Build](#Build)
   - [Makefile Configuration Options](#Makefile-Configuration-Options)
@@ -25,7 +30,7 @@
     - [Install custom python package](#Install-custom-python-package)
     - [UI Links](#UI-Links)
 
-## Informations
+## Information
 This repository was originally forked from Puckel's docker-airflow [repository](https://github.com/puckel/docker-airflow)
 
 * Based on Python (3.7-slim) official Image [python:3.7-slim](https://hub.docker.com/_/python/) and uses the official [Postgres](https://hub.docker.com/_/postgres/) as backend and [Redis](https://hub.docker.com/_/redis/) as queue
