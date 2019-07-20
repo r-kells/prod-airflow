@@ -105,7 +105,9 @@ By default, docker-airflow runs Airflow with **SequentialExecutor** :
 
 Using the DAG [init_airflow.py](dags/init_airflow.py) we automatically setup airflow Charts for monitoring.
 
-- Airflow Charts: [localhost:8080/admin/chart/](http://localhost:8080/admin/chart/)
+Airflow Charts: [localhost:8080/admin/chart/](http://localhost:8080/admin/chart/)
+
+- [Active Task Instances](http://localhost:8080/admin/airflow/chart?chart_id=2&iteration_no=0)
 
 ### Canary DAG 
 

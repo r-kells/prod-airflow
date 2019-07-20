@@ -64,9 +64,9 @@ def initialize_etl_example():
 
     new_chart = models.Chart()
     new_chart.conn_id = "my_postgres"
-    new_chart.label = "Active Task Instance States (Last 7 Days)"
-    new_chart.sql = "SELECT state, COUNT(*) from task_instance GROUP BY state ORDER BY COUNT(*)"
-    new_chart.chart_type = "bar"
+    new_chart.label = "Active Task Instance States"
+    new_chart.sql = "SELECT state, COUNT(*) from task_instance WHERE state NOT IN ('success', 'failed') GROUP BY state ORDER BY COUNT(*)"
+    new_chart.chart_type = "datatable"
     new_chart.x_is_date = False
     new_chart.sql_layout = "columns"
 
