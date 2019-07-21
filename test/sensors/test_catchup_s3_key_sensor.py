@@ -1,11 +1,12 @@
 """
-For other examples about how to get started testing custom Airflow Sensors / Operators. 
+For other examples about how to get started testing custom Airflow Sensors / Operators.
 See: https://github.com/apache/airflow/tree/master/tests/
 """
 import datetime
 import unittest
 from unittest import mock
 
+from airflow import DAG
 from airflow.exceptions import AirflowException
 from airflow.sensors.catch_up_s3_key_sensor_plugin import CatchUpS3KeySensor
 
@@ -89,3 +90,25 @@ class CatchUpS3KeySensorTests(unittest.TestCase):
         self.assertTrue(actual, True)
 
         s.log.info.assert_called_with(s.DATA_EXISTS_TMPL.format(self.bucket_key))
+
+    @mock.patch('airflow.hooks.S3_hook.S3Hook')
+    def test_template(self, mock_hook):
+        """
+        Ensure template field `bucket_key` renders.
+        This is a fairly fragile unit test, but its useful to double check you jinja templating syntax.
+        """
+        args = {'owner': 'airflow', 'start_date': self.today}
+        dag = DAG('test_dag_id', default_args=args)
+
+        with dag:
+            bucket_key_tmpl = "my_s3_prefix/{{ execution_date.strftime('%Y/%m/%d') }}"
+
+            s = CatchUpS3KeySensor(
+                task_id='s3_key_sensor',
+                bucket_key=bucket_key_tmpl,
+                bucket_name=self.bucket_name,
+                template_fields=("bucket_key",),
+                dag=dag
+            )
+            result = s.render_template('', s.bucket_key, {"execution_date": self.today})
+            self.assertEqual(result, 'my_s3_prefix/{}'.format(self.today.strftime("%Y/%m/%d")))

@@ -31,7 +31,7 @@ class CatchUpS3KeySensor(BaseSensorOperator):
     WITHIN_WINDOW_LOG_TMPL = "No data found for key: {0}, execution_date: {1} is > {2}. Retrying at next poke interval."
     DATA_EXISTS_TMPL = "Data exists for key: {0}"
 
-    template_fields = {'bucket_key'}
+    template_fields = ('bucket_key',)
 
     @apply_defaults
     def __init__(self,
