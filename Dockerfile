@@ -35,6 +35,7 @@ RUN set -ex \
         build-essential \
         apt-utils \
         netcat \
+        curl \
     && useradd -ms /bin/bash -d ${AIRFLOW_USER_HOME} airflow \
     && pip install -U pip setuptools \
     && pip install -U "flake8==3.6.0" "pep8-naming==0.7.0" "coverage==4.5.3" \
@@ -68,3 +69,4 @@ USER airflow
 WORKDIR ${AIRFLOW_USER_HOME}
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["webserver"] # set default arg for entrypoint
+HEALTHCHECK CMD curl -sLf http://localhost:8080/health || exit 1
