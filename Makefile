@@ -3,8 +3,6 @@ IMAGE_TAG := rkells/prod-airflow:latest
 SERVICE := webserver
 EXECUTOR := Local
 ENV_FILE := dev.env
-AIRFLOW_TESTING := False
-
 
 .PHONY: build
 build:
