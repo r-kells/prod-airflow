@@ -104,7 +104,13 @@ Therefore you can easily have tests that interact with the database.
 
 To use the Celery Executor:
 
-        make test EXECUTOR=Celery
+    make test EXECUTOR=Celery
+
+> Note: `make test` activates a statement in the [entrypoint](script/entrypoint.sh) using the environment variable `AIRFLOW_TESTING`.
+> When this argument is set, we run:
+>  - airflow initdb
+>  - bash -c "flake8 test/ dags/ plugins/ && coverage run -a -m unittest discover -v -s test/ && coverage report"
+
 
 ### Included tests
 

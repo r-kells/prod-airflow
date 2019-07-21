@@ -67,29 +67,38 @@ if [ "$AIRFLOW__CORE__EXECUTOR" = "CeleryExecutor" ]; then
   wait_for_port "Redis" "$REDIS_HOST" "$REDIS_PORT"
 fi
 
-case "$1" in
-  webserver)
-    airflow initdb
-    if [ "$AIRFLOW__CORE__EXECUTOR" = "SequentialExecutor" ] || [ "$AIRFLOW__CORE__EXECUTOR" = "LocalExecutor" ]; then
-      # With the "Local" or "Sequential" executor it should all run in one container.
-      airflow scheduler &
-    fi
-    exec airflow webserver
-    ;;
-  worker|scheduler)
-    # To give the webserver time to run initdb.
-    sleep 10
-    exec airflow "$@"
-    ;;
-  flower)
-    sleep 10
-    exec airflow "$@"
-    ;;
-  version)
-    exec airflow "$@"
-    ;;
-  *)
-    # The command is something like bash, not an airflow subcommand. Just run it in the right environment.
-    exec "$@"
-    ;;
-esac
+# Sets up DB and runs testing command
+if [ "$AIRFLOW_TESTING" = "True" ]; then
+  airflow initdb
+	bash -c "flake8 test/ dags/ plugins/ && coverage run -a -m unittest discover -v -s test/ && coverage report"
+
+else
+
+  case "$1" in
+    webserver)
+      airflow initdb
+      if [ "$AIRFLOW__CORE__EXECUTOR" = "SequentialExecutor" ] || [ "$AIRFLOW__CORE__EXECUTOR" = "LocalExecutor" ]; then
+        # With the "Local" or "Sequential" executor it should all run in one container.
+        airflow scheduler &
+      fi
+      exec airflow webserver
+      ;;
+    worker|scheduler)
+      # To give the webserver time to run initdb.
+      sleep 10
+      exec airflow "$@"
+      ;;
+    flower)
+      sleep 10
+      exec airflow "$@"
+      ;;
+    version)
+      exec airflow "$@"
+      ;;
+    *)
+      # The command is something like bash, not an airflow subcommand. Just run it in the right environment.
+      exec "$@"
+      ;;
+  esac
+fi
+

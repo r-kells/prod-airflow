@@ -3,6 +3,8 @@ IMAGE_TAG := rkells/prod-airflow:latest
 SERVICE := webserver
 EXECUTOR := Local
 ENV_FILE := dev.env
+AIRFLOW_TESTING := False
+
 
 .PHONY: build
 build:
@@ -10,9 +12,8 @@ build:
 
 .PHONY: test
 test: docrm build
-	ENV_FILE=$(ENV_FILE) docker-compose -f docker-compose-$(EXECUTOR)Executor.yml run --rm \
-	webserver \
-	/bin/bash -c "flake8 test/ dags/ plugins/ && coverage run -a -m unittest discover -v -s test/ && coverage report"
+	AIRFLOW_TESTING=True ENV_FILE=$(ENV_FILE) docker-compose -f docker-compose-$(EXECUTOR)Executor.yml run \
+	webserver
 
 .PHONY: debug
 debug: docrm build
