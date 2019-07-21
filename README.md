@@ -65,6 +65,7 @@ Pull a specific version. The image version uses the format <airflow version>-<pr
 
 -  ENV_FILE
 -  EXECUTOR
+-  AIRFLOW_TESTING
 
 ENV_FILE: Environment Variable Handling
 
@@ -79,6 +80,10 @@ EXECUTOR: Executor Type
 The default executor type is LocalExecutor for `make test` and `make debug`
 
     make <command> EXECUTOR=Celery
+
+AIRFLOW_TESTING: A boolean flag for unit testing using `docker-compose`.
+
+It is only applied in the `make test` command. See the [#Test](#Test) section.
 
 ## Build
 
@@ -118,6 +123,8 @@ To use the Celery Executor:
   - Tests that all DAGs compile
   - Verifies DAG bag loads in under 2 seconds.
   - Verifies all DAGs have `email` and `onwer` set.
+- [sensors/test_catchup_s3_key_sensor.py](sensors/test_catchup_s3_key_sensor.py)
+  - An example plugin unit test.
 
 ### Coverage
 
@@ -209,6 +216,8 @@ You are encouraged to extend this DAG for reproducible setup.
 ### Custom Airflow plugins
 
 Documentation on plugins can be found [here](https://airflow.apache.org/plugins.html)
+
+An example plugin can be found [here](plugins/sensors/catchup_s3_key_sensor.py), along with it's [unit tests](test/sensors/test_catchup_s3_key_sensor.py).
 
 ### Install custom python package
 
