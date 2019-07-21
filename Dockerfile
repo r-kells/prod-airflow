@@ -37,12 +37,12 @@ RUN set -ex \
         netcat \
         curl \
     && useradd -ms /bin/bash -d ${AIRFLOW_USER_HOME} airflow \
-    && pip install -U pip setuptools \
+    && pip install -U "pip==19.1.1" "setuptools==41.0.1" \
     && pip install -U "flake8==3.6.0" "pep8-naming==0.7.0" "coverage==4.5.3" \
-    && pip install pytz \
-    && pip install pyOpenSSL \
-    && pip install ndg-httpsclient \
-    && pip install pyasn1 \
+    && pip install "pytz==2019.1" \
+    && pip install "pyOpenSSL==19.0.0" \
+    && pip install "ndg-httpsclient==0.5.1" \
+    && pip install "pyasn1==0.4.5" \
     && pip install apache-airflow[async,crypto,celery,google_auth,password,postgres,jdbc,redis,s3,slack,ssh${AIRFLOW_DEPS:+,}${AIRFLOW_DEPS}]==${AIRFLOW_VERSION} \
     && pip install 'werkzeug>=0.15.0' \
     && if [ -n "${PYTHON_DEPS}" ]; then pip install ${PYTHON_DEPS}; fi \
