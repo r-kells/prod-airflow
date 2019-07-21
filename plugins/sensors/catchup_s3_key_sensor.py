@@ -1,12 +1,8 @@
 import datetime
 
-from airflow import hooks
 from airflow.operators.sensors import BaseSensorOperator
 from airflow.plugins_manager import AirflowPlugin
 from airflow.utils.decorators import apply_defaults
-
-PASSED_WINDOW_LOG_TMPL = "No data found for key: {0}, execution_date: {1} is <= {2}. Marking Success"
-WITHIN_WINDOW_LOG_TMPL = "No data found for key: {0}, execution_date: {1} is > {2}. Retrying at next poke interval."
 
 
 class CatchUpS3KeySensor(BaseSensorOperator):
@@ -31,6 +27,10 @@ class CatchUpS3KeySensor(BaseSensorOperator):
     Returns:
         (bool) Poke method used to determine task instance success.
     """
+    PASSED_WINDOW_LOG_TMPL = "No data found for key: {0}, execution_date: {1} is <= {2}. Marking Success"
+    WITHIN_WINDOW_LOG_TMPL = "No data found for key: {0}, execution_date: {1} is > {2}. Retrying at next poke interval."
+    DATA_EXISTS_TMPL = "Data exists for key: {0}"
+
     template_fields = {'bucket_key'}
 
     @apply_defaults
@@ -38,12 +38,12 @@ class CatchUpS3KeySensor(BaseSensorOperator):
                  bucket_name,
                  bucket_key,
                  early_success_timedelta=datetime.timedelta(days=7),
-                 s3_conn_id='aws_default',
+                 aws_conn_id='aws_default',
                  *args, **kwargs):
 
         super(CatchUpS3KeySensor, self).__init__(*args, **kwargs)
 
-        self.s3_conn_id = s3_conn_id
+        self.aws_conn_id = aws_conn_id
         self.bucket_name = bucket_name
         self.bucket_key = bucket_key
         self.early_success_timedelta = early_success_timedelta
@@ -52,24 +52,26 @@ class CatchUpS3KeySensor(BaseSensorOperator):
         data_exists = self.does_data_exist()
 
         if data_exists:
-            self.log.info("Data exists for key: {0}".format(self.bucket_key))
+            self.log.info(self.DATA_EXISTS_TMPL.format(self.bucket_key))
             return True
 
         if context['execution_date'] <= datetime.datetime.utcnow() - self.early_success_timedelta:
-            self.log.info(PASSED_WINDOW_LOG_TMPL
+            self.log.info(self.PASSED_WINDOW_LOG_TMPL
                           .format(self.bucket_key, context['execution_date'], self.early_success_timedelta))
             return True
 
-        self.log.info(WITHIN_WINDOW_LOG_TMPL
+        self.log.info(self.WITHIN_WINDOW_LOG_TMPL
                       .format(self.bucket_key, context['execution_date'], self.early_success_timedelta))
         return False
 
     def does_data_exist(self):
+        from airflow.hooks.S3_hook import S3Hook
+
         self.log.info("Checking if data exists for key: {}".format(self.bucket_key))
-        hook = hooks.S3Hook(aws_conn_id=self.s3_conn_id)
+        hook = S3Hook(aws_conn_id=self.aws_conn_id)
         return hook.check_for_key(self.bucket_key, self.bucket_name)
 
 
 class CatchUpS3KeySensorPlugin(AirflowPlugin):
     name = "catch_up_s3_key_sensor_plugin"
-    operators = [CatchUpS3KeySensor]
+    sensors = [CatchUpS3KeySensor]
