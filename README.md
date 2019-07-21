@@ -6,13 +6,21 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/rkells/prod-airflow.svg)]()
 [![Docker Stars](https://img.shields.io/docker/stars/rkells/prod-airflow.svg)]()
 
+`prod-airflow` is designed to help get you started running Airflow in production.
+
+- Based on Python (3.7-slim) official Image [python:3.7-slim](https://hub.docker.com/_/python/) 
+and uses the official [Postgres](https://hub.docker.com/_/postgres/) as backend 
+and [Redis](https://hub.docker.com/_/redis/) as queue.
+
+- Following the Airflow (1.10.3) release from [Python Package Index](https://pypi.python.org/pypi/apache-airflow)
+
+This repository was originally forked from Puckel's docker-airflow [repository](https://github.com/puckel/docker-airflow).
+
 - [prod-airflow](#prod-airflow)
-  - [Information](#Information)
+  - [Features](#Features)
   - [Installation](#Installation)
   - [Makefile Configuration Options](#Makefile-Configuration-Options)
-    - [1. ENV_FILE: Environment Variable Handling](#1-ENVFILE-Environment-Variable-Handling)
   - [Build](#Build)
-    - [2. EXECUTOR: Executor Type](#2-EXECUTOR-Executor-Type)
   - [Test](#Test)
     - [Included tests](#Included-tests)
     - [Coverage](#Coverage)
@@ -30,15 +38,20 @@
     - [Install custom python package](#Install-custom-python-package)
     - [UI Links](#UI-Links)
 
-## Information
-This repository was originally forked from Puckel's docker-airflow [repository](https://github.com/puckel/docker-airflow)
+## Features
 
-* Based on Python (3.7-slim) official Image [python:3.7-slim](https://hub.docker.com/_/python/) and uses the official [Postgres](https://hub.docker.com/_/postgres/) as backend and [Redis](https://hub.docker.com/_/redis/) as queue
-* Install [Docker](https://www.docker.com/)
-* Install [Docker Compose](https://docs.docker.com/compose/install/)
-* Following the Airflow release from [Python Package Index](https://pypi.python.org/pypi/apache-airflow)
+- Unit / integration testing with Docker.
+  - Included a [smoke test](test/test_dag_smoke.py) that checks the basics of all your DAG's.
+  - Easily add more tests of your own.
+- Pre-made Airflow DAG's and charts to [monitor](#Monitoring) Airflow performance and uptime.
+- Easy [debugging](#Debug) a production-like environment using `docker-compose`.
+- Basic authentication setup for running in production.
+- [Makefile](#Makefile-Configuration-Options) for easy docker commands.
 
 ## Installation
+
+* Install [Docker](https://www.docker.com/)
+* Install [Docker Compose](https://docs.docker.com/compose/install/)
 
 Pull the image from the Docker repository.
 
@@ -46,16 +59,22 @@ Pull the image from the Docker repository.
 
 ## Makefile Configuration Options
 
-1. ENV_FILE
-2. EXECUTOR
+-  ENV_FILE
+-  EXECUTOR
 
-### 1. ENV_FILE: Environment Variable Handling
+ENV_FILE: Environment Variable Handling
 
 We use `.env` files to manage docker environment variables. 
 This is configurable through specifying the environment variable `ENV_FILE`.
 The default file is [dev.env](dev.env), also included [prod.env](prod.env)
 
     make <command> ENV_FILE=prod.env
+
+EXECUTOR: Executor Type
+
+The default executor type is LocalExecutor for `make test` and `make debug`
+
+    make <command> EXECUTOR=Celery
 
 ## Build
 
@@ -66,11 +85,6 @@ Optionally install [Extra Airflow Packages](https://airflow.incubator.apache.org
     docker build --rm --build-arg AIRFLOW_DEPS="datadog,dask" -t rkells/prod-airflow .
     docker build --rm --build-arg PYTHON_DEPS="flask_oauthlib>=0.9" -t rkells/prod-airflow .
 
-### 2. EXECUTOR: Executor Type
-
-The default executor type is LocalExecutor for `make test` and `make debug`
-
-    make <command> EXECUTOR=Celery
 
 ## Test
 
