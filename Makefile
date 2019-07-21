@@ -1,4 +1,4 @@
-CONTAINERS := $(shell docker ps -a -q)
+CONTAINERS := $(shell docker ps -a -q --filter name=prod-airflow)
 IMAGE_TAG := rkells/prod-airflow:latest
 SERVICE := webserver
 EXECUTOR := Local
@@ -25,7 +25,7 @@ run: docrm build
 	-v $(shell pwd)/dags/:/usr/local/airflow/dags \
 	-v $(shell pwd)/test/:/usr/local/airflow/test \
     -v $(shell pwd)/plugins/:/usr/local/airflow/plugins \
-	-d -p 8080:8080 $(IMAGE_TAG) $(service) 
+	-d -p 8080:8080 $(IMAGE_TAG) $(SERVICE)
 
 # Helpers
 .PHONY: clean
