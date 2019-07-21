@@ -1,3 +1,7 @@
+"""
+For other examples about how to get started testing custom Airflow Sensors / Operators. 
+See: https://github.com/apache/airflow/tree/master/tests/
+"""
 import datetime
 import unittest
 from unittest import mock
