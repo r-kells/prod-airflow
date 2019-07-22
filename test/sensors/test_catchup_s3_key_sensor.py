@@ -107,7 +107,6 @@ class CatchUpS3KeySensorTests(unittest.TestCase):
                 task_id='s3_key_sensor',
                 bucket_key=bucket_key_tmpl,
                 bucket_name=self.bucket_name,
-                template_fields=("bucket_key",),
                 dag=dag
             )
             result = s.render_template('', s.bucket_key, {"execution_date": self.today})

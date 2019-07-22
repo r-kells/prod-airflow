@@ -146,9 +146,18 @@ To debug the CeleryExecutor:
 
 ## Run
 
-By default, docker-airflow runs Airflow with **SequentialExecutor** :
+By default, docker-airflow runs Airflow with **SequentialExecutor**.
+This can be modified by configuring the executor within an `.env` file.
+Keep in mind, if you change the `EXECUTOR=Local or Celery`, 
+the [entrypoint.sh](script/entrypoint.sh) will expect a database connection to be available.
 
-    make run
+To start the container in detached mode:
+
+    make run 
+
+To run an arbitrary airflow command on the image:
+
+    make cmd SERVICE="airflow list_dags"
 
 ## Monitoring
 
