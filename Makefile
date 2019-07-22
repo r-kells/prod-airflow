@@ -15,16 +15,25 @@ test: docrm build
 
 .PHONY: debug
 debug: docrm build
-	ENV_FILE=$(ENV_FILE) docker-compose -f docker-compose-$(EXECUTOR)Executor.yml up -d --remove-orphans 
+	ENV_FILE=$(ENV_FILE) docker-compose -f docker-compose-$(EXECUTOR)Executor.yml up -d --remove-orphans
 
 .PHONY: run
-run: docrm build
+run:
 	docker run \
 	--env-file $(ENV_FILE) \
 	-v $(shell pwd)/dags/:/usr/local/airflow/dags \
 	-v $(shell pwd)/test/:/usr/local/airflow/test \
     -v $(shell pwd)/plugins/:/usr/local/airflow/plugins \
-	-d -p 8080:8080 $(IMAGE_TAG) $(SERVICE)
+	--rm -d -p 8080:8080 $(IMAGE_TAG) $(SERVICE)
+
+.PHONY: cmd
+cmd:
+	docker run \
+	--env-file $(ENV_FILE) \
+	-v $(shell pwd)/dags/:/usr/local/airflow/dags \
+	-v $(shell pwd)/test/:/usr/local/airflow/test \
+    -v $(shell pwd)/plugins/:/usr/local/airflow/plugins \
+	--rm -p 8080:8080 $(IMAGE_TAG) $(SERVICE)
 
 # Helpers
 .PHONY: clean
@@ -33,6 +42,7 @@ clean: dockerclean
 .PHONY: dockerclean
 dockerclean: docrm
 	docker image prune
+	docker container prune
 
 .PHONY: docstop
 docstop:
