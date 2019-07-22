@@ -41,8 +41,8 @@ clean: dockerclean
 
 .PHONY: dockerclean
 dockerclean: docrm
-	docker image prune
-	docker container prune
+	echo y | docker image prune
+	echo y | docker container prune
 
 .PHONY: docstop
 docstop:
