@@ -57,7 +57,7 @@ Pull the image from the Docker repository.
 
     docker pull rkells/prod-airflow
 
-Pull a specific version. The image version uses the format <airflow version>-<prod-airflow version>.
+Pull a specific version. The image version uses the format `<airflow version>-<prod-airflow version>`.
 
     docker pull r-kells/prod-airflow:1.10.3-0.0.1
 
