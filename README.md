@@ -22,21 +22,17 @@ This repository was originally forked from Puckel's docker-airflow [repository](
   - [Makefile Configuration Options](#Makefile-Configuration-Options)
   - [Build](#Build)
   - [Test](#Test)
-    - [Included tests](#Included-tests)
-    - [Coverage](#Coverage)
   - [Debug](#Debug)
   - [Run](#Run)
   - [Monitoring](#Monitoring)
-    - [Canary DAG](#Canary-DAG)
   - [Configurating Airflow](#Configurating-Airflow)
-    - [Environment Variables:](#Environment-Variables)
+    - [Environment Variables](#Environment-Variables)
     - [Fernet Key](#Fernet-Key)
     - [Authentication](#Authentication)
     - [Ad hoc query / Connections](#Ad-hoc-query--Connections)
     - [The init_airflow.py DAG](#The-initairflowpy-DAG)
     - [Custom Airflow plugins](#Custom-Airflow-plugins)
     - [Install custom python package](#Install-custom-python-package)
-    - [UI Links](#UI-Links)
 
 ## Features
 
@@ -117,16 +113,16 @@ To use the Celery Executor:
 >  - bash -c "flake8 test/ dags/ plugins/ && coverage run -a -m unittest discover -v -s test/ && coverage report"
 
 
-### Included tests
+Included tests
 
 - [test_dag_smoke.py](test/test_dag_smoke.py)
   - Tests that all DAGs compile
   - Verifies DAG bag loads in under 2 seconds.
   - Verifies all DAGs have `email` and `onwer` set.
 - [sensors/test_catchup_s3_key_sensor.py](sensors/test_catchup_s3_key_sensor.py)
-  - An example plugin unit test.
+  - An example [custom plugin](#Custom-Airflow-plugins) unit test.
 
-### Coverage
+Coverage
 
 `make test` runs unittests with coverage, then prints the results.
 
@@ -144,6 +140,9 @@ To debug the CeleryExecutor:
 
     make debug EXECUTOR=Celery
 
+- Airflow: [localhost:8080](http://localhost:8080/)
+- Flower: [localhost:5555](http://localhost:5555/)
+
 ## Run
 
 By default, docker-airflow runs Airflow with **SequentialExecutor**.
@@ -159,6 +158,9 @@ To run an arbitrary airflow command on the image:
 
     make cmd SERVICE="airflow list_dags"
 
+- Airflow: [localhost:8080](http://localhost:8080/)
+- Flower: [localhost:5555](http://localhost:5555/)
+
 ## Monitoring
 
 The [init_airflow.py](dags/init_airflow.py) automatically sets up airflow Charts for monitoring.
@@ -169,7 +171,7 @@ Airflow Charts: [localhost:8080/admin/chart/](http://localhost:8080/admin/chart/
 - [Scheduler Delay (Last 2 Hours)](http://localhost:8080/admin/airflow/chart?chart_id=3&iteration_no=0)
 - [Scheduler Delay (Aggregated per hour)](http://localhost:8080/admin/airflow/chart?chart_id=4&iteration_no=0)
 
-### Canary DAG 
+**The Canary DAG** 
 
 The [canary DAG](dags/canary.py) runs every 5 minutes.
 
@@ -185,7 +187,7 @@ The “canary” DAG helps to answer the following questions:
 
 ## Configurating Airflow
 
-### Environment Variables:
+### Environment Variables
 Add Airflow ENV variables to `.env` files and reference them with docker
 See [Airflow documentation](http://airflow.readthedocs.io/en/latest/howto/set-config.html#setting-configuration-options) for more details
 
@@ -236,8 +238,3 @@ An example plugin can be found [here](plugins/sensors/catchup_s3_key_sensor.py),
 - The entrypoint.sh script will execute the pip install command (with --user option)
 
 Alternatively, build your image with your desired packages
-
-### UI Links
-
-- Airflow: [localhost:8080](http://localhost:8080/)
-- Flower: [localhost:5555](http://localhost:5555/)
