@@ -48,6 +48,33 @@ def initialize_airflow():
     """
     )
 
+    new_chart(
+        session,
+        conn_id='my_postgres',
+        label='Scheduler Delay (Last 2 Hours)',
+        sql="""SELECT execution_date as "Execution Date",
+       (EXTRACT(epoch FROM start_date) - EXTRACT(epoch FROM execution_date)) / 60 "Scheduler Delay (min)"
+FROM dag_run
+WHERE dag_id = 'canary'
+AND execution_date >= NOW() - INTERVAL '2 hour'
+ORDER BY "Execution Date" DESC;
+"""
+    )
+
+    new_chart(
+        session,
+        conn_id='my_postgres',
+        label='Scheduler Delay (Aggregated per hour)',
+        sql="""SELECT DATE_TRUNC('hour', execution_date) as "Execution Hour",
+       AVG((EXTRACT(epoch FROM start_date) - EXTRACT(epoch FROM execution_date)) / 60) " Average Scheduler Delay (min)"
+FROM dag_run
+WHERE dag_id = 'canary'
+AND execution_date >= NOW() - INTERVAL '7 day'
+GROUP BY DATE_TRUNC('hour', execution_date)
+ORDER BY "Execution Hour" DESC;
+"""
+    )
+
     session.close()
 
 
