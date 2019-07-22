@@ -19,7 +19,8 @@ def initialize_airflow():
     session = Session()
 
     # CONNECTIONS
-    new_connection(session,
+    new_connection(
+        session,
         conn_id="my_postgres",
         conn_type="postgres",
         host="postgres",
@@ -35,7 +36,8 @@ def initialize_airflow():
 
     # CHARTS
     # FYI ATM graphs in Airflow are broken, use datatables for now.
-    new_chart(session,
+    new_chart(
+        session,
         conn_id='my_postgres',
         label='Active Task Instances by State',
         sql="""SELECT state, COUNT(*)
@@ -49,16 +51,8 @@ def initialize_airflow():
     session.close()
 
 
-dag = airflow.DAG(
-    'init_airflow',
-    schedule_interval="@once",
-    default_args=args,
-    max_active_runs=1)
-
-t1 = PythonOperator(task_id='initialize_etl_example',
-                    python_callable=initialize_airflow,
-                    provide_context=False,
-                    dag=dag)
+with airflow.DAG('init_airflow', schedule_interval="@once", default_args=args) as dag:
+    t1 = PythonOperator(task_id='initialize_etl_example', python_callable=initialize_airflow, provide_context=False)
 
 
 # Helpers
