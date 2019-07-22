@@ -161,11 +161,13 @@ To run an arbitrary airflow command on the image:
 
 ## Monitoring
 
-Using the DAG [init_airflow.py](dags/init_airflow.py) we automatically setup airflow Charts for monitoring.
+The [init_airflow.py](dags/init_airflow.py) automatically sets up airflow Charts for monitoring.
 
 Airflow Charts: [localhost:8080/admin/chart/](http://localhost:8080/admin/chart/)
 
 - [Active Task Instances](http://localhost:8080/admin/airflow/chart?chart_id=2&iteration_no=0)
+- [Scheduler Delay (Last 2 Hours)](http://localhost:8080/admin/airflow/chart?chart_id=3&iteration_no=0)
+- [Scheduler Delay (Aggregated per hour)](http://localhost:8080/admin/airflow/chart?chart_id=4&iteration_no=0)
 
 ### Canary DAG 
 
