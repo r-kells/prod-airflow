@@ -46,8 +46,6 @@ class CatchUpS3KeySensorTests(unittest.TestCase):
         actual = s.poke(context={"execution_date": self.today})
         self.assertEqual(actual, False)
 
-        mock_check_for_key.assert_called_with(s.bucket_key, s.bucket_name)
-
         s.log.info.assert_called_with(s.WITHIN_WINDOW_LOG_TMPL.format(
             self.bucket_key, self.today, s.early_success_timedelta))
 
@@ -78,8 +76,6 @@ class CatchUpS3KeySensorTests(unittest.TestCase):
         actual = s.poke(context={"execution_date": self.a_while_ago})
         self.assertEqual(actual, True)
 
-        mock_check_for_key.assert_called_with(s.bucket_key, s.bucket_name)
-
         s.log.info.assert_called_with(s.PASSED_WINDOW_LOG_TMPL.format(
             self.bucket_key, self.a_while_ago, s.early_success_timedelta))
 
@@ -91,10 +87,9 @@ class CatchUpS3KeySensorTests(unittest.TestCase):
 
         s.log.info.assert_called_with(s.DATA_EXISTS_TMPL.format(self.bucket_key))
 
-    @mock.patch('airflow.hooks.S3_hook.S3Hook')
-    def test_template(self, mock_hook):
+    def test_template(self):
         """
-        Ensure template field `bucket_key` renders.
+        Ensure template field `bucket_key` renders as expected.
         This is a fairly fragile unit test, but its useful to double check you jinja templating syntax.
         """
         args = {'owner': 'airflow', 'start_date': self.today}
