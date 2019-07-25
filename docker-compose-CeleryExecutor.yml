@@ -60,7 +60,6 @@ services:
             - ${ENV_FILE}
         environment:
             - EXECUTOR=Celery
-            - AIRFLOW_TESTING=${AIRFLOW_TESTING}
         volumes:
             - ./dags:/usr/local/airflow/dags
             - ./test:/usr/local/airflow/test

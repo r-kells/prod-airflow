@@ -61,7 +61,6 @@ Pull a specific version. The image version uses the format `<airflow version>-<p
 
 -  ENV_FILE
 -  EXECUTOR
--  AIRFLOW_TESTING
 
 ENV_FILE: Environment Variable Handling
 
@@ -76,10 +75,6 @@ EXECUTOR: Executor Type
 The default executor type is LocalExecutor for `make test` and `make debug`
 
     make <command> EXECUTOR=Celery
-
-AIRFLOW_TESTING: A boolean flag for unit testing using `docker-compose`.
-
-It is only applied in the `make test` command. See the [#Test](#Test) section.
 
 ## Build
 
@@ -106,12 +101,6 @@ Therefore you can easily have tests that interact with the database.
 To use the Celery Executor:
 
     make test EXECUTOR=Celery
-
-> Note: `make test` activates a statement in the [entrypoint](script/entrypoint.sh) using the environment variable `AIRFLOW_TESTING`.
-> When this argument is set, we run:
->  - airflow initdb
->  - bash -c "flake8 test/ dags/ plugins/ && coverage run -a -m unittest discover -v -s test/ && coverage report"
-
 
 Included tests
 

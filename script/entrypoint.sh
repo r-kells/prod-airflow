@@ -67,14 +67,7 @@ if [ "$AIRFLOW__CORE__EXECUTOR" = "CeleryExecutor" ]; then
   wait_for_port "Redis" "$REDIS_HOST" "$REDIS_PORT"
 fi
 
-# Sets up DB and runs testing command
-if [ "$AIRFLOW_TESTING" = "True" ]; then
-  airflow initdb
-	bash -c "flake8 test/ dags/ plugins/ && coverage run -a -m unittest discover -v -s test/ && coverage report"
-
-else
-
-  case "$1" in
+case "$1" in
     webserver)
       airflow initdb
       if [ "$AIRFLOW__CORE__EXECUTOR" = "SequentialExecutor" ] || [ "$AIRFLOW__CORE__EXECUTOR" = "LocalExecutor" ]; then
