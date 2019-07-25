@@ -9,10 +9,12 @@ build:
 	docker build . -t $(IMAGE_TAG)
 
 .PHONY: test
-test: docrm build
+test: build
 	ENV_FILE=$(ENV_FILE) docker-compose -f docker-compose-$(EXECUTOR)Executor.yml run --rm \
 	webserver \
-	bash -c "airflow initdb && flake8 test/ dags/ plugins/ && coverage run -a -m unittest discover -v -s test/ && coverage report"
+	bash -c "airflow initdb && \
+	flake8 test/ dags/ plugins/ && \
+	coverage run -a -m unittest discover -v -s test/ && coverage report"
 
 
 .PHONY: debug
