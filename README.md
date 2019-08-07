@@ -80,11 +80,8 @@ The default executor type is LocalExecutor for `make test` and `make debug`
 
     make build 
 
-Optionally install [Extra Airflow Packages](https://airflow.incubator.apache.org/installation.html#extra-package) and/or python dependencies at build time :
-
-    docker build --rm --build-arg AIRFLOW_DEPS="datadog,dask" -t rkells/prod-airflow .
-    docker build --rm --build-arg PYTHON_DEPS="flask_oauthlib>=0.9" -t rkells/prod-airflow .
-
+Optionally install [Extra Airflow Packages](https://airflow.incubator.apache.org/installation.html#extra-package).
+Please modify the dockerfile.
 
 ## Test
 
@@ -177,10 +174,17 @@ The “canary” DAG helps to answer the following questions:
 ## Configurating Airflow
 
 ### Environment Variables
+
 Add Airflow ENV variables to `.env` files and reference them with docker
 See [Airflow documentation](http://airflow.readthedocs.io/en/latest/howto/set-config.html#setting-configuration-options) for more details
 
+#### Secrets
+
+Secrets can be added to `secrets.env` (you must create it first) and are imported into your airflow environment using the makefile commands.
+`secrets.env` is ignored by `git`. Don't commit this file if you use it!
+
 ### Fernet Key
+
 For encrypted connection passwords (in Local or Celery Executor), you must have the same fernet_key. By default docker-airflow generates the fernet_key at startup, you have to set an environment variable in the docker-compose (ie: docker-compose-LocalExecutor.yml) file to set the same key accross containers. To generate a fernet_key :
 
     docker run rkells/prod-airflow python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)"

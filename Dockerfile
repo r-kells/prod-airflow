@@ -14,7 +14,6 @@ ENV TERM linux
 # Airflow
 ARG AIRFLOW_VERSION=1.10.3
 ARG AIRFLOW_USER_HOME=/usr/local/airflow
-ARG AIRFLOW_DEPS=""
 ARG PYTHON_DEPS=""
 ENV AIRFLOW_HOME=${AIRFLOW_USER_HOME}
 
@@ -26,7 +25,6 @@ RUN set -ex \
         libssl-dev \
         libffi-dev \
         libpq-dev \
-        git \
     ' \
     && apt-get update -yqq \
     && apt-get install -yqq --no-install-recommends \
@@ -36,6 +34,8 @@ RUN set -ex \
         apt-utils \
         netcat \
         curl \
+        git \
+        ssh \
     && useradd -ms /bin/bash -d ${AIRFLOW_USER_HOME} airflow \
     && pip install -U "pip==19.1.1" "setuptools==41.0.1" \
     && pip install -U "flake8==3.6.0" "pep8-naming==0.7.0" "coverage==4.5.3" \
@@ -43,7 +43,7 @@ RUN set -ex \
     && pip install "pyOpenSSL==19.0.0" \
     && pip install "ndg-httpsclient==0.5.1" \
     && pip install "pyasn1==0.4.5" \
-    && pip install apache-airflow[async,crypto,celery,google_auth,password,postgres,jdbc,redis,s3,slack,ssh${AIRFLOW_DEPS:+,}${AIRFLOW_DEPS}]==${AIRFLOW_VERSION} \
+    && pip install apache-airflow[async,crypto,celery,google_auth,password,postgres,jdbc,redis,s3,slack,ssh]==${AIRFLOW_VERSION} \
     && pip install 'werkzeug>=0.15.0' \
     && if [ -n "${PYTHON_DEPS}" ]; then pip install ${PYTHON_DEPS}; fi \
     && apt-get purge --auto-remove -yqq $buildDeps \

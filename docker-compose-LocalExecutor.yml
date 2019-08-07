@@ -14,12 +14,14 @@ services:
             - postgres
         env_file:
             - ${ENV_FILE}
+            - secrets.env
         environment:
             - EXECUTOR=Local
         volumes:
             - ./dags:/usr/local/airflow/dags
             - ./test:/usr/local/airflow/test
             - ./plugins:/usr/local/airflow/plugins
+            - ./requirements.txt:/requirements.txt
         ports:
             - "8080:8080"
         command: webserver
