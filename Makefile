@@ -25,7 +25,6 @@ debug: docrm build
 run:
 	docker run \
 	--env-file $(ENV_FILE) \
-	--env-file secrets.env \
 	-v $(shell pwd)/dags/:/usr/local/airflow/dags \
 	-v $(shell pwd)/test/:/usr/local/airflow/test \
     -v $(shell pwd)/plugins/:/usr/local/airflow/plugins \
@@ -36,7 +35,6 @@ run:
 cmd:
 	docker run \
 	--env-file $(ENV_FILE) \
-	--env-file secrets.env \
 	-v $(shell pwd)/dags/:/usr/local/airflow/dags \
 	-v $(shell pwd)/test/:/usr/local/airflow/test \
     -v $(shell pwd)/plugins/:/usr/local/airflow/plugins \

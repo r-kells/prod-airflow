@@ -23,7 +23,6 @@ services:
             - redis
         env_file:
             - ${ENV_FILE}
-            - secrets.env
         environment:
             - EXECUTOR=Celery
         volumes:

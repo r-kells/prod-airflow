@@ -14,5 +14,3 @@ venv
 dist/
 build/
 
-# Secrets
-secrets.env
