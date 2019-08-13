@@ -8,8 +8,9 @@
 __pycache__
 *.pyc
 .tox
+venv
 
 # Build
 dist/
 build/
-venv
+

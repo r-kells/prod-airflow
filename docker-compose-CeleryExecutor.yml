@@ -29,6 +29,8 @@ services:
             - ./dags:/usr/local/airflow/dags
             - ./test:/usr/local/airflow/test
             - ./plugins:/usr/local/airflow/plugins
+            - ./requirements.txt:/requirements.txt
+
         ports:
             - "8080:8080"
         command: webserver
@@ -64,6 +66,7 @@ services:
             - ./dags:/usr/local/airflow/dags
             - ./test:/usr/local/airflow/test
             - ./plugins:/usr/local/airflow/plugins
+            - ./requirements.txt:/requirements.txt
         command: scheduler
 
     worker:
@@ -79,4 +82,5 @@ services:
             - ./dags:/usr/local/airflow/dags
             - ./test:/usr/local/airflow/test
             - ./plugins:/usr/local/airflow/plugins
+            - ./requirements.txt:/requirements.txt
         command: worker

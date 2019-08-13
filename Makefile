@@ -28,6 +28,7 @@ run:
 	-v $(shell pwd)/dags/:/usr/local/airflow/dags \
 	-v $(shell pwd)/test/:/usr/local/airflow/test \
     -v $(shell pwd)/plugins/:/usr/local/airflow/plugins \
+	-v $(shell pwd)/requirements.txt:/requirements.txt \
 	--rm -d -p 8080:8080 $(IMAGE_TAG) $(SERVICE)
 
 .PHONY: cmd
@@ -37,6 +38,7 @@ cmd:
 	-v $(shell pwd)/dags/:/usr/local/airflow/dags \
 	-v $(shell pwd)/test/:/usr/local/airflow/test \
     -v $(shell pwd)/plugins/:/usr/local/airflow/plugins \
+	-v $(shell pwd)/requirements.txt:/requirements.txt \
 	--rm -p 8080:8080 $(IMAGE_TAG) $(SERVICE)
 
 # Helpers
